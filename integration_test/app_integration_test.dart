@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tech_task/presentation/post_details/post_details_item.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_tech_task/main.dart';
@@ -9,7 +10,7 @@ import 'package:integration_test/integration_test.dart';
 import '../test/utils/ui_verification.dart';
 import '../test/utils/fixtures.dart';
 
-Client theHttpClient = Client();
+Client httpClient = Client();
 
 const postsAppBarKey = Key('posts_app_bar');
 const postsListKey = Key('posts_list');
@@ -25,7 +26,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    theHttpClient = MockClient((request) async {
+    httpClient = MockClient((request) async {
       switch (request.url.path) {
         case '/posts/1':
           return Response(Fixtures.detailsPage1, 200);
@@ -40,24 +41,28 @@ void main() {
     });
   });
 
-  testWidgets('Verify list page widget ordering', (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(httpClient: theHttpClient));
+  group('Posts Page', () {
+    testWidgets('Verify list page widget ordering', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(MyApp(httpClient: httpClient));
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    verifyUiElements(tester, [
-      const Present(key: postsAppBarKey),
-      const Present(key: postsListKey, isBelow: postsAppBarKey),
-      const Present(key: postItem1Key),
-      const Present(key: postItem2Key, isBelow: postItem1Key),
-      const Present(key: postItem3Key, isBelow: postItem2Key),
-    ]);
+      verifyUiElements(tester, [
+        const Present(key: postsAppBarKey),
+        const Present(key: postsListKey, isBelow: postsAppBarKey),
+        const Present(key: postItem1Key),
+        const Present(key: postItem2Key, isBelow: postItem1Key),
+        const Present(key: postItem3Key, isBelow: postItem2Key),
+      ]);
+    });
   });
 
   testWidgets('Navigates to details page when tapping an item', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(MyApp(httpClient: theHttpClient));
+    await tester.pumpWidget(MyApp(httpClient: httpClient));
 
     await tester.pumpAndSettle();
 
@@ -65,10 +70,52 @@ void main() {
     await tester.tap(find.byKey(postItem1Key));
     await tester.pumpAndSettle();
 
-    verifyUiElements(tester, [
-      const Present(key: detailsAppBarKey),
-      const Present(key: postDetailsTitle1Key, isBelow: detailsAppBarKey),
-      const Present(key: postDetailsBody1Key, isBelow: postDetailsTitle1Key),
-    ]);
+    expect(find.byType(PostDetailsItem), findsOneWidget);
+  });
+
+  group('Post Details Page', () {
+    testWidgets('Verify page is empty when data is not present', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        MyApp(
+          httpClient: MockClient((request) async {
+            switch (request.url.path) {
+              case '/posts/':
+                return Response(Fixtures.listPage, 200);
+            }
+            return Response('{}', 404);
+          }),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(postItem1Key), findsOneWidget);
+      await tester.tap(find.byKey(postItem1Key));
+      await tester.pump();
+
+      // Since the mock client does not return data for post id 1, the details page should be empty
+      expect(find.byType(PostDetailsItem), findsNothing);
+    });
+
+    testWidgets('Verify details page widget ordering', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(MyApp(httpClient: httpClient));
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(postItem1Key), findsOneWidget);
+      await tester.tap(find.byKey(postItem1Key));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostDetailsItem), findsOneWidget);
+      verifyUiElements(tester, [
+        const Present(key: detailsAppBarKey),
+        const Present(key: postDetailsTitle1Key, isBelow: detailsAppBarKey),
+        const Present(key: postDetailsBody1Key, isBelow: postDetailsTitle1Key),
+      ]);
+    });
   });
 }

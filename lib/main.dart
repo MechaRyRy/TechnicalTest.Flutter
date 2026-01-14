@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/post_item.dart';
 import 'package:http/http.dart';
 
 void main() {
@@ -113,31 +114,18 @@ class _ListPageState extends State<ListPage> {
       ),
       body: ListView(
         key: const Key('posts_list'),
-        children: posts.map((post) {
-          return InkWell(
-            onTap: () {
-              Navigator.of(
-                context,
-              ).pushNamed('details/', arguments: {'id': post['id']});
-            },
-            child: Container(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    key: Key("post_item:${post['id']}"),
-                    post['title'],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(post['body']),
-                  Container(height: 10),
-                  const Divider(thickness: 1, color: Colors.grey),
-                ],
+        children: posts
+            .map(
+              (post) => PostItem(
+                id: post['id'],
+                title: post['title'],
+                body: post['body'],
+                onTap: () => Navigator.of(
+                  context,
+                ).pushNamed('details/', arguments: {'id': post['id']}),
               ),
-            ),
-          );
-        }).toList(),
+            )
+            .toList(),
       ),
     );
   }

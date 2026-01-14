@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tech_task/presentation/post_details/post_details_item.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/post_item.dart';
 import 'package:http/http.dart';
 
@@ -56,30 +57,24 @@ class _DetailsPageState extends State<DetailsPage> {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
+    final id = args?['id'] ?? 'unknown';
+
     return FutureBuilder<dynamic>(
       future: widget._httpClient.get(
-        Uri.parse('https://jsonplaceholder.typicode.com/posts/${args?['id']}'),
+        Uri.parse('https://jsonplaceholder.typicode.com/posts/$id'),
       ),
       builder: (post, response) {
         if (response.hasData) {
           dynamic data = json.decode(response.data!.body);
           return Scaffold(
-            appBar: AppBar(title: const Text('Post details')),
-            body: Container(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  Text(
-                    data['title'],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Container(height: 10),
-                  Text(data['body'], style: const TextStyle(fontSize: 16)),
-                ],
-              ),
+            appBar: AppBar(
+              key: Key('details_app_bar'),
+              title: const Text('Post details'),
+            ),
+            body: PostDetailsItem(
+              id: id,
+              title: data['title'],
+              body: data['body'],
             ),
           );
         } else {
@@ -109,7 +104,7 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        key: const Key('app_bar'),
+        key: const Key('posts_app_bar'),
         title: const Text("List of posts"),
       ),
       body: ListView(

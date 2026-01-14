@@ -1,40 +1,22 @@
-import 'dart:convert';
-
-import 'package:flutter_tech_task/domain/entities/post_details.dart';
+import 'package:flutter_tech_task/data/data_sources/json_placeholder_api.dart';
 import 'package:flutter_tech_task/presentation/post_details/cubit/post_details_state.dart';
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
-import 'package:http/http.dart';
 
 class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
   final int _id;
-  final Client _httpClient;
+  final JsonPlaceholderApi _jsonPlaceholderApi;
 
-  PostDetailsCubit({required int id, required Client httpClient})
-    : _id = id,
-      _httpClient = httpClient,
-      super(PostDetailsLoading());
+  PostDetailsCubit({
+    required int id,
+    required JsonPlaceholderApi jsonPlaceholderApi,
+  }) : _id = id,
+       _jsonPlaceholderApi = jsonPlaceholderApi,
+       super(PostDetailsLoading());
 
-  Future<void> fetchPost() async {
-    _httpClient
-        .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/$_id'))
-        .then((response) {
-          try {
-            final body = json.decode(response.body);
-            if (body is Map<String, dynamic>) {
-              maybeEmit(
-                PostDetailsLoaded(
-                  postDetails: PostDetails(
-                    id: _id,
-                    title: body['title'],
-                    body: body['body'],
-                  ),
-                ),
-              );
-              return;
-            }
-          } on TypeError catch (_) {
-            // do nothing, this will be moved to the data layer later.
-          }
-        });
-  }
+  Future<void> fetchPost() async =>
+      _jsonPlaceholderApi.getPostDetails(_id).then((postDetails) {
+        if (postDetails != null) {
+          maybeEmit(PostDetailsLoaded(postDetails: postDetails));
+        }
+      });
 }

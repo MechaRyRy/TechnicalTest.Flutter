@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tech_task/data/data_sources/json_placeholder_api.dart';
 import 'package:flutter_tech_task/injection.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_item.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_page.dart';
@@ -32,29 +33,35 @@ void main() {
   setUp(() {
     setupInjection();
     getIt.allowReassignment = true;
-    getIt.registerSingleton<Client>(
-      MockClient((request) async {
-        switch (request.url.path) {
-          case '/posts/1':
-            return "post_details_1.json".toResponse();
-          case '/posts/2':
-            return "post_details_2.json".toResponse();
-          case '/posts/3':
-            return "post_details_3.json".toResponse();
-          case '/posts/':
-            return "posts.json".toResponse();
-        }
-        return Response('', 404);
-      }),
+    getIt.registerSingleton<JsonPlaceholderApi>(
+      HttpBasedJsonPlaceholderApi(
+        httpClient: MockClient((request) async {
+          switch (request.url.path) {
+            case '/posts/1':
+              return "post_details_1.json".toResponse();
+            case '/posts/2':
+              return "post_details_2.json".toResponse();
+            case '/posts/3':
+              return "post_details_3.json".toResponse();
+            case '/posts/':
+              return "posts.json".toResponse();
+          }
+          return Response('', 404);
+        }),
+      ),
     );
   });
+
+  tearDown(() => getIt.reset());
 
   group('Posts Page', () {
     testWidgets('Verify page is empty when data is not present', (
       WidgetTester tester,
     ) async {
-      getIt.registerSingleton<Client>(
-        MockClient((request) async => Response('{}', 404)),
+      getIt.registerSingleton<JsonPlaceholderApi>(
+        HttpBasedJsonPlaceholderApi(
+          httpClient: MockClient((request) async => Response('{}', 404)),
+        ),
       );
       await tester.pumpWidget(const MyApp());
 
@@ -102,14 +109,16 @@ void main() {
     testWidgets('Verify page is empty when data is not present', (
       WidgetTester tester,
     ) async {
-      getIt.registerSingleton<Client>(
-        MockClient((request) async {
-          switch (request.url.path) {
-            case '/posts/':
-              return "posts.json".toResponse();
-          }
-          return Response('{}', 404);
-        }),
+      getIt.registerSingleton<JsonPlaceholderApi>(
+        HttpBasedJsonPlaceholderApi(
+          httpClient: MockClient((request) async {
+            switch (request.url.path) {
+              case '/posts/':
+                return "posts.json".toResponse();
+            }
+            return Response('{}', 404);
+          }),
+        ),
       );
 
       await tester.pumpWidget(const MyApp());
@@ -122,8 +131,8 @@ void main() {
 
       // Since the mock client does not return data for post id 1, the details page should be empty
       expect(find.byType(PostDetailsPage), findsOneWidget);
-      expect(find.byType(Container), findsOneWidget);
       expect(find.byType(PostDetailsItem), findsNothing);
+      expect(find.byType(Container), findsOneWidget);
     });
 
     testWidgets('Verify details page widget ordering', (

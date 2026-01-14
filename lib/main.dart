@@ -1,41 +1,47 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp(httpClient: Client()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Client _httpClient;
+
+  const MyApp({super.key, required Client httpClient})
+    : _httpClient = httpClient;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       initialRoute: 'list/',
       routes: {
-        "list/": (context) => ListPage(),
-        "details/": (context) => DetailsPage(),
+        "list/": (context) => ListPage(httpClient: _httpClient),
+        "details/": (context) => DetailsPage(httpClient: _httpClient),
       },
     );
   }
 }
 
 class ListPage extends StatefulWidget {
-  ListPage({Key? key}) : super(key: key);
+  final Client _httpClient;
+
+  const ListPage({super.key, required Client httpClient})
+    : _httpClient = httpClient;
 
   @override
   State<ListPage> createState() => _ListPageState();
 }
 
 class DetailsPage extends StatefulWidget {
-  DetailsPage({Key? key}) : super(key: key);
+  final Client _httpClient;
+
+  const DetailsPage({super.key, required Client httpClient})
+    : _httpClient = httpClient;
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -50,30 +56,36 @@ class _DetailsPageState extends State<DetailsPage> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     return FutureBuilder<dynamic>(
-        future: http.get(Uri.parse(
-            'https://jsonplaceholder.typicode.com/posts/${args?['id']}')),
-        builder: (post, response) {
-          if (response.hasData) {
-            dynamic data = json.decode(response.data!.body);
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Post details'),
-              ),
-              body: Container(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(children: [
-                    Text(
-                      data['title'],
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      future: widget._httpClient.get(
+        Uri.parse('https://jsonplaceholder.typicode.com/posts/${args?['id']}'),
+      ),
+      builder: (post, response) {
+        if (response.hasData) {
+          dynamic data = json.decode(response.data!.body);
+          return Scaffold(
+            appBar: AppBar(title: const Text('Post details')),
+            body: Container(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  Text(
+                    data['title'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    Container(height: 10),
-                    Text(data['body'], style:  const TextStyle(fontSize: 16))
-                  ])),
-            );
-          } else {
-            return Container();
-          }
-        });
+                  ),
+                  Container(height: 10),
+                  Text(data['body'], style: const TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }
 
@@ -83,14 +95,13 @@ class _ListPageState extends State<ListPage> {
   @override
   void initState() {
     super.initState();
-    http
+    widget._httpClient
         .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/'))
         .then((response) {
-
-      setState(() {
-        posts = json.decode(response.body);
-      });
-    });
+          setState(() {
+            posts = json.decode(response.body);
+          });
+        });
   }
 
   @override
@@ -111,8 +122,9 @@ class _ListPageState extends State<ListPage> {
         children: posts.map((post) {
           return InkWell(
             onTap: () {
-              Navigator.of(context)
-                  .pushNamed('details/', arguments: {'id': post['id']});
+              Navigator.of(
+                context,
+              ).pushNamed('details/', arguments: {'id': post['id']});
             },
             child: Container(
               padding: const EdgeInsets.only(left: 10, right: 10),
@@ -125,10 +137,7 @@ class _ListPageState extends State<ListPage> {
                   ),
                   Text(post['body']),
                   Container(height: 10),
-                  const Divider(
-                    thickness: 1,
-                    color: Colors.grey,
-                  )
+                  const Divider(thickness: 1, color: Colors.grey),
                 ],
               ),
             ),

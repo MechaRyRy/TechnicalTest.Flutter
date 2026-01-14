@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tech_task/presentation/post_details/post_details_page.dart';
-import 'package:flutter_tech_task/presentation/posts_lists/posts_list_page.dart';
+import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_page.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/widgets/posts_list_page.dart';
 import 'package:http/http.dart';
 
 void main() {

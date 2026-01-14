@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tech_task/presentation/posts_lists/post_item.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/widgets/post_item.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../utils/ui_verification.dart';

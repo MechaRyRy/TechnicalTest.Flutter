@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tech_task/presentation/posts_lists/post_item.dart';
-import 'package:flutter_tech_task/presentation/posts_lists/posts_list_cubit.dart';
-import 'package:flutter_tech_task/presentation/posts_lists/posts_list_state.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/widgets/post_item.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/cubit/posts_list_cubit.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/cubit/posts_list_state.dart';
 import 'package:http/http.dart';
 
 class PostsListPage extends StatelessWidget {

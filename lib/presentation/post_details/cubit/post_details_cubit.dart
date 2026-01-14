@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_tech_task/presentation/post_details/post_details_state.dart';
+import 'package:flutter_tech_task/presentation/post_details/cubit/post_details_state.dart';
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
 import 'package:http/http.dart';
 

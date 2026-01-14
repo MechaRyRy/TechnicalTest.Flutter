@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_task/presentation/post_details/post_details_cubit.dart';
 import 'package:flutter_tech_task/presentation/post_details/post_details_item.dart';
+import 'package:flutter_tech_task/presentation/post_details/post_details_state.dart';
 import 'package:http/http.dart';
 
 class PostDetailsPage extends StatefulWidget {
@@ -36,28 +37,22 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-
-    final id = args?['id'] ?? 'unknown';
-
-    return BlocBuilder<PostDetailsCubit, PostDetailsState>(
-      bloc: _cubit?..fetchPost(),
-      builder: (cubit, state) => Scaffold(
-        appBar: AppBar(
-          key: Key('details_app_bar'),
-          title: const Text('Post details'),
-        ),
-        body: switch (state) {
-          PostDetailsLoading() => Container(),
-          PostDetailsLoaded() => PostDetailsItem(
-            id: id,
-            title: state.post['title'],
-            body: state.post['body'],
+  Widget build(BuildContext context) =>
+      BlocBuilder<PostDetailsCubit, PostDetailsState>(
+        bloc: _cubit?..fetchPost(),
+        builder: (cubit, state) => Scaffold(
+          appBar: AppBar(
+            key: Key('details_app_bar'),
+            title: const Text('Post details'),
           ),
-        },
-      ),
-    );
-  }
+          body: switch (state) {
+            PostDetailsLoading() => Container(),
+            PostDetailsLoaded() => PostDetailsItem(
+              id: state.id,
+              title: state.title,
+              body: state.body,
+            ),
+          },
+        ),
+      );
 }

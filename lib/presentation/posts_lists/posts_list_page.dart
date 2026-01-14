@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/post_item.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/posts_list_cubit.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/posts_list_state.dart';
 import 'package:http/http.dart';
 
 class PostsListPage extends StatefulWidget {
@@ -37,23 +38,26 @@ class _PostsListPageState extends State<PostsListPage> {
         key: const Key('posts_app_bar'),
         title: const Text("List of posts"),
       ),
-      body: BlocBuilder<PostsListCubit, List<dynamic>>(
+      body: BlocBuilder<PostsListCubit, PostsListState>(
         bloc: cubit?..fetchPosts(),
-        builder: (context, state) => ListView(
-          key: const Key('posts_list'),
-          children: state
-              .map(
-                (post) => PostItem(
-                  id: post['id'],
-                  title: post['title'],
-                  body: post['body'],
-                  onTap: () => Navigator.of(
-                    context,
-                  ).pushNamed('details/', arguments: {'id': post['id']}),
-                ),
-              )
-              .toList(),
-        ),
+        builder: (context, state) => switch (state) {
+          PostsListLoading() => Container(),
+          PostsListLoaded() => ListView(
+            key: const Key('posts_list'),
+            children: state.posts
+                .map(
+                  (post) => PostItem(
+                    id: post.id,
+                    title: post.title,
+                    body: post.body,
+                    onTap: () => Navigator.of(
+                      context,
+                    ).pushNamed('details/', arguments: {'id': post.id}),
+                  ),
+                )
+                .toList(),
+          ),
+        },
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_tech_task/presentation/post_details/post_details_state.dart';
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
 import 'package:http/http.dart';
 
@@ -16,21 +17,21 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
     _httpClient
         .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/$_id'))
         .then((response) {
-          maybeEmit(PostDetailsLoaded(post: json.decode(response.body)));
+          try {
+            final body = json.decode(response.body);
+            if (body is Map<String, dynamic>) {
+              maybeEmit(
+                PostDetailsLoaded(
+                  id: _id,
+                  title: body['title'],
+                  body: body['body'],
+                ),
+              );
+              return;
+            }
+          } on TypeError catch (_) {
+            // do nothing, this will be moved to the data layer later.
+          }
         });
   }
-}
-
-sealed class PostDetailsState {
-  const PostDetailsState();
-}
-
-class PostDetailsLoading extends PostDetailsState {
-  const PostDetailsLoading();
-}
-
-class PostDetailsLoaded extends PostDetailsState {
-  final Map<String, dynamic> post;
-
-  const PostDetailsLoaded({required this.post});
 }

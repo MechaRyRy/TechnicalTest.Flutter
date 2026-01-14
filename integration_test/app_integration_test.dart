@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tech_task/presentation/post_details/post_details_item.dart';
 import 'package:flutter_tech_task/presentation/post_details/post_details_page.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/post_item.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/posts_list_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -44,6 +45,20 @@ void main() {
   });
 
   group('Posts Page', () {
+    testWidgets('Verify page is empty when data is not present', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        MyApp(httpClient: MockClient((request) async => Response('{}', 404))),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostsListPage), findsOneWidget);
+      expect(find.byType(Container), findsOneWidget);
+      expect(find.byType(PostItem), findsNothing);
+    });
+
     testWidgets('Verify list page widget ordering', (
       WidgetTester tester,
     ) async {
@@ -60,21 +75,21 @@ void main() {
         const Present(key: postItem3Key, isBelow: postItem2Key),
       ]);
     });
-  });
 
-  testWidgets('Navigates to details page when tapping an item', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(MyApp(httpClient: httpClient));
+    testWidgets('Navigates to details page when tapping an item', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(MyApp(httpClient: httpClient));
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(find.byType(PostsListPage), findsOneWidget);
-    expect(find.byKey(postItem1Key), findsOneWidget);
-    await tester.tap(find.byKey(postItem1Key));
-    await tester.pumpAndSettle();
+      expect(find.byType(PostsListPage), findsOneWidget);
+      expect(find.byKey(postItem1Key), findsOneWidget);
+      await tester.tap(find.byKey(postItem1Key));
+      await tester.pumpAndSettle();
 
-    expect(find.byType(PostDetailsPage), findsOneWidget);
+      expect(find.byType(PostDetailsPage), findsOneWidget);
+    });
   });
 
   group('Post Details Page', () {

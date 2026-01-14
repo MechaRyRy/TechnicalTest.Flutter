@@ -106,19 +106,13 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+        key: const Key('app_bar'),
         title: const Text("List of posts"),
       ),
       body: ListView(
+        key: const Key('posts_list'),
         children: posts.map((post) {
           return InkWell(
             onTap: () {
@@ -132,6 +126,7 @@ class _ListPageState extends State<ListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    key: Key("post_item:${post['id']}"),
                     post['title'],
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),

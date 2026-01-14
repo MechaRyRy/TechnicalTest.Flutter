@@ -11,8 +11,8 @@ import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:integration_test/integration_test.dart';
 
+import '../test/utils/assets_reader.dart';
 import '../test/utils/ui_verification.dart';
-import '../test/utils/fixtures.dart';
 
 Client httpClient = Client();
 
@@ -36,13 +36,13 @@ void main() {
       MockClient((request) async {
         switch (request.url.path) {
           case '/posts/1':
-            return Response(Fixtures.detailsPage1, 200);
+            return "post_details_1.json".toResponse();
           case '/posts/2':
-            return Response(Fixtures.detailsPage2, 200);
+            return "post_details_2.json".toResponse();
           case '/posts/3':
-            return Response(Fixtures.detailsPage3, 200);
+            return "post_details_3.json".toResponse();
           case '/posts/':
-            return Response(Fixtures.listPage, 200);
+            return "posts.json".toResponse();
         }
         return Response('', 404);
       }),
@@ -106,7 +106,7 @@ void main() {
         MockClient((request) async {
           switch (request.url.path) {
             case '/posts/':
-              return Response(Fixtures.listPage, 200);
+              return "posts.json".toResponse();
           }
           return Response('{}', 404);
         }),

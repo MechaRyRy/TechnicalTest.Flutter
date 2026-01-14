@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tech_task/injection.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_item.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_page.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/widgets/post_item.dart';
@@ -29,28 +30,33 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    httpClient = MockClient((request) async {
-      switch (request.url.path) {
-        case '/posts/1':
-          return Response(Fixtures.detailsPage1, 200);
-        case '/posts/2':
-          return Response(Fixtures.detailsPage2, 200);
-        case '/posts/3':
-          return Response(Fixtures.detailsPage3, 200);
-        case '/posts/':
-          return Response(Fixtures.listPage, 200);
-      }
-      return Response('', 404);
-    });
+    setupInjection();
+    getIt.allowReassignment = true;
+    getIt.registerSingleton<Client>(
+      MockClient((request) async {
+        switch (request.url.path) {
+          case '/posts/1':
+            return Response(Fixtures.detailsPage1, 200);
+          case '/posts/2':
+            return Response(Fixtures.detailsPage2, 200);
+          case '/posts/3':
+            return Response(Fixtures.detailsPage3, 200);
+          case '/posts/':
+            return Response(Fixtures.listPage, 200);
+        }
+        return Response('', 404);
+      }),
+    );
   });
 
   group('Posts Page', () {
     testWidgets('Verify page is empty when data is not present', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        MyApp(httpClient: MockClient((request) async => Response('{}', 404))),
+      getIt.registerSingleton<Client>(
+        MockClient((request) async => Response('{}', 404)),
       );
+      await tester.pumpWidget(const MyApp());
 
       await tester.pumpAndSettle();
 
@@ -62,7 +68,7 @@ void main() {
     testWidgets('Verify list page widget ordering', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(MyApp(httpClient: httpClient));
+      await tester.pumpWidget(const MyApp());
 
       await tester.pumpAndSettle();
 
@@ -79,7 +85,7 @@ void main() {
     testWidgets('Navigates to details page when tapping an item', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(MyApp(httpClient: httpClient));
+      await tester.pumpWidget(const MyApp());
 
       await tester.pumpAndSettle();
 
@@ -96,17 +102,17 @@ void main() {
     testWidgets('Verify page is empty when data is not present', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(
-        MyApp(
-          httpClient: MockClient((request) async {
-            switch (request.url.path) {
-              case '/posts/':
-                return Response(Fixtures.listPage, 200);
-            }
-            return Response('{}', 404);
-          }),
-        ),
+      getIt.registerSingleton<Client>(
+        MockClient((request) async {
+          switch (request.url.path) {
+            case '/posts/':
+              return Response(Fixtures.listPage, 200);
+          }
+          return Response('{}', 404);
+        }),
       );
+
+      await tester.pumpWidget(const MyApp());
 
       await tester.pumpAndSettle();
 
@@ -123,7 +129,7 @@ void main() {
     testWidgets('Verify details page widget ordering', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(MyApp(httpClient: httpClient));
+      await tester.pumpWidget(const MyApp());
 
       await tester.pumpAndSettle();
 

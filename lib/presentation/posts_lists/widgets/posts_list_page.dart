@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tech_task/injection.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/widgets/post_item.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/cubit/posts_list_cubit.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/cubit/posts_list_state.dart';
-import 'package:http/http.dart';
 
 class PostsListPage extends StatelessWidget {
-  final Client _httpClient;
-
-  const PostsListPage({super.key, required Client httpClient})
-    : _httpClient = httpClient;
+  const PostsListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PostsListCubit>(
-      create: (context) =>
-          PostsListCubit(httpClient: _httpClient)..fetchPosts(),
+      create: (context) => getIt<PostsListCubit>()..fetchPosts(),
       child: _PostsListPageContent(),
     );
   }

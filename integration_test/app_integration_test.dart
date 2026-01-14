@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tech_task/presentation/post_details/post_details_item.dart';
+import 'package:flutter_tech_task/presentation/post_details/post_details_page.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/posts_list_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_tech_task/main.dart';
@@ -49,6 +51,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
+      expect(find.byType(PostsListPage), findsOneWidget);
       verifyUiElements(tester, [
         const Present(key: postsAppBarKey),
         const Present(key: postsListKey, isBelow: postsAppBarKey),
@@ -66,11 +69,12 @@ void main() {
 
     await tester.pumpAndSettle();
 
+    expect(find.byType(PostsListPage), findsOneWidget);
     expect(find.byKey(postItem1Key), findsOneWidget);
     await tester.tap(find.byKey(postItem1Key));
     await tester.pumpAndSettle();
 
-    expect(find.byType(PostDetailsItem), findsOneWidget);
+    expect(find.byType(PostDetailsPage), findsOneWidget);
   });
 
   group('Post Details Page', () {
@@ -93,9 +97,10 @@ void main() {
 
       expect(find.byKey(postItem1Key), findsOneWidget);
       await tester.tap(find.byKey(postItem1Key));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // Since the mock client does not return data for post id 1, the details page should be empty
+      expect(find.byType(PostDetailsPage), findsOneWidget);
       expect(find.byType(PostDetailsItem), findsNothing);
     });
 
@@ -110,7 +115,7 @@ void main() {
       await tester.tap(find.byKey(postItem1Key));
       await tester.pumpAndSettle();
 
-      expect(find.byType(PostDetailsItem), findsOneWidget);
+      expect(find.byType(PostDetailsPage), findsOneWidget);
       verifyUiElements(tester, [
         const Present(key: detailsAppBarKey),
         const Present(key: postDetailsTitle1Key, isBelow: detailsAppBarKey),

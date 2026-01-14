@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter_tech_task/domain/entities/post_details.dart';
 import 'package:flutter_tech_task/domain/entities/post_summary.dart';
+import 'package:flutter_tech_task/domain/entities/result.dart';
 import 'package:http/http.dart' as http;
 
 abstract class JsonPlaceholderApi {
-  Future<List<PostSummary>> getPosts();
-  Future<PostDetails?> getPostDetails(int postId);
+  Future<Result<List<PostSummary>>> getPosts();
+  Future<Result<PostDetails>> getPostDetails(int postId);
 }
 
 class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
@@ -16,7 +17,7 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
     : _httpClient = httpClient;
 
   @override
-  Future<List<PostSummary>> getPosts() => _httpClient
+  Future<Result<List<PostSummary>>> getPosts() => _httpClient
       .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/'))
       .then((response) {
         List<dynamic> responseList =
@@ -31,23 +32,31 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
             )
             .toList();
 
-        return posts;
+        return Result.success(posts);
       })
-      .catchError((_) => <PostSummary>[]);
+      .onError<Exception>(
+        (e, _) => Result<List<PostSummary>>.failureFromException(error: e),
+      )
+      .onError<Error>(
+        (e, _) => Result<List<PostSummary>>.failureFromError(error: e),
+      );
 
   @override
-  Future<PostDetails?> getPostDetails(int postId) => _httpClient
+  Future<Result<PostDetails>> getPostDetails(int postId) => _httpClient
       .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/$postId'))
       .then((response) {
         final body = json.decode(response.body);
         if (body is Map<String, dynamic>) {
-          return PostDetails(
-            id: postId,
-            title: body['title'],
-            body: body['body'],
+          return Result.success(
+            PostDetails(id: postId, title: body['title'], body: body['body']),
           );
         }
-        return null;
+        return Result<PostDetails>.failureFromException(
+          error: Exception('Invalid response format'),
+        );
       })
-      .catchError((_) => null);
+      .onError<Exception>(
+        (e, _) => Result<PostDetails>.failureFromException(error: e),
+      )
+      .onError<Error>((e, _) => Result<PostDetails>.failureFromError(error: e));
 }

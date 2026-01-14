@@ -5,31 +5,24 @@ import 'package:flutter_tech_task/presentation/posts_lists/posts_list_cubit.dart
 import 'package:flutter_tech_task/presentation/posts_lists/posts_list_state.dart';
 import 'package:http/http.dart';
 
-class PostsListPage extends StatefulWidget {
+class PostsListPage extends StatelessWidget {
   final Client _httpClient;
 
   const PostsListPage({super.key, required Client httpClient})
     : _httpClient = httpClient;
 
   @override
-  State<PostsListPage> createState() => _PostsListPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider<PostsListCubit>(
+      create: (context) =>
+          PostsListCubit(httpClient: _httpClient)..fetchPosts(),
+      child: _PostsListPageContent(),
+    );
+  }
 }
 
-class _PostsListPageState extends State<PostsListPage> {
-  PostsListCubit? cubit;
-
-  @override
-  void initState() {
-    super.initState();
-    cubit = PostsListCubit(httpClient: widget._httpClient);
-  }
-
-  @override
-  void dispose() {
-    cubit?.close();
-    cubit = null;
-    super.dispose();
-  }
+class _PostsListPageContent extends StatelessWidget {
+  const _PostsListPageContent();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +32,6 @@ class _PostsListPageState extends State<PostsListPage> {
         title: const Text("List of posts"),
       ),
       body: BlocBuilder<PostsListCubit, PostsListState>(
-        bloc: cubit?..fetchPosts(),
         builder: (context, state) => switch (state) {
           PostsListLoading() => Container(),
           PostsListLoaded() => ListView(

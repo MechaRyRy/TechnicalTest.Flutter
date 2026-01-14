@@ -5,7 +5,7 @@ import 'package:flutter_tech_task/presentation/post_details/post_details_item.da
 import 'package:flutter_tech_task/presentation/post_details/post_details_state.dart';
 import 'package:http/http.dart';
 
-class PostDetailsPage extends StatefulWidget {
+class PostDetailsPage extends StatelessWidget {
   final int _id;
   final Client _httpClient;
 
@@ -17,42 +17,33 @@ class PostDetailsPage extends StatefulWidget {
        _httpClient = httpClient;
 
   @override
-  State<PostDetailsPage> createState() => _PostDetailsPageState();
+  Widget build(BuildContext context) => BlocProvider<PostDetailsCubit>(
+    create: (context) =>
+        PostDetailsCubit(id: _id, httpClient: _httpClient)..fetchPost(),
+    child: _PostDetailsPageContent(),
+  );
 }
 
-class _PostDetailsPageState extends State<PostDetailsPage> {
-  PostDetailsCubit? _cubit;
+class _PostDetailsPageContent extends StatelessWidget {
+  const _PostDetailsPageContent();
 
   @override
-  void initState() {
-    super.initState();
-    _cubit = PostDetailsCubit(id: widget._id, httpClient: widget._httpClient);
-  }
-
-  @override
-  void dispose() {
-    _cubit?.close();
-    _cubit = null;
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<PostDetailsCubit, PostDetailsState>(
-        bloc: _cubit?..fetchPost(),
-        builder: (cubit, state) => Scaffold(
-          appBar: AppBar(
-            key: Key('details_app_bar'),
-            title: const Text('Post details'),
-          ),
-          body: switch (state) {
-            PostDetailsLoading() => Container(),
-            PostDetailsLoaded() => PostDetailsItem(
-              id: state.id,
-              title: state.title,
-              body: state.body,
-            ),
-          },
+  Widget build(BuildContext context) {
+    return BlocBuilder<PostDetailsCubit, PostDetailsState>(
+      builder: (cubit, state) => Scaffold(
+        appBar: AppBar(
+          key: Key('details_app_bar'),
+          title: const Text('Post details'),
         ),
-      );
+        body: switch (state) {
+          PostDetailsLoading() => Container(),
+          PostDetailsLoaded() => PostDetailsItem(
+            id: state.id,
+            title: state.title,
+            body: state.body,
+          ),
+        },
+      ),
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_tech_task/domain/entities/post_summary.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/cubit/posts_list_state.dart';
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
 import 'package:http/http.dart';
@@ -20,7 +21,7 @@ class PostsListCubit extends SafeEmissionCubit<PostsListState> {
                 json.decode(response.body) as List<dynamic>;
             final posts = responseList
                 .map(
-                  (post) => Post(
+                  (post) => PostSummary(
                     id: post['id'],
                     title: post['title'],
                     body: post['body'],

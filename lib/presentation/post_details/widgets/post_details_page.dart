@@ -37,10 +37,10 @@ class _PostDetailsPageContent extends StatelessWidget {
         ),
         body: switch (state) {
           PostDetailsLoading() => Container(),
-          PostDetailsLoaded() => PostDetailsItem(
-            id: state.id,
-            title: state.title,
-            body: state.body,
+          PostDetailsLoaded(postDetails: final postDetails) => PostDetailsItem(
+            id: postDetails.id,
+            title: postDetails.title,
+            body: postDetails.body,
           ),
         },
       ),

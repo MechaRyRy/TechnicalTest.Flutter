@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_tech_task/domain/entities/post_details.dart';
 import 'package:flutter_tech_task/presentation/post_details/cubit/post_details_state.dart';
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
 import 'package:http/http.dart';
@@ -22,9 +23,11 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
             if (body is Map<String, dynamic>) {
               maybeEmit(
                 PostDetailsLoaded(
-                  id: _id,
-                  title: body['title'],
-                  body: body['body'],
+                  postDetails: PostDetails(
+                    id: _id,
+                    title: body['title'],
+                    body: body['body'],
+                  ),
                 ),
               );
               return;

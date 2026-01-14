@@ -21,7 +21,13 @@ class MyApp extends StatelessWidget {
       initialRoute: 'list/',
       routes: {
         "list/": (context) => PostsListPage(httpClient: _httpClient),
-        "details/": (context) => PostDetailsPage(httpClient: _httpClient),
+        "details/": (context) {
+          final args =
+              ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>?;
+          int id = args?['id'] ?? -1;
+          return PostDetailsPage(id: id, httpClient: _httpClient);
+        },
       },
     );
   }

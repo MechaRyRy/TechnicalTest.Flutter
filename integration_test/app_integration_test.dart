@@ -101,6 +101,7 @@ void main() {
 
       // Since the mock client does not return data for post id 1, the details page should be empty
       expect(find.byType(PostDetailsPage), findsOneWidget);
+      expect(find.byType(Container), findsOneWidget);
       expect(find.byType(PostDetailsItem), findsNothing);
     });
 

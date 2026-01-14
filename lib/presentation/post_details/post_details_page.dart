@@ -1,21 +1,39 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tech_task/presentation/post_details/post_details_cubit.dart';
 import 'package:flutter_tech_task/presentation/post_details/post_details_item.dart';
 import 'package:http/http.dart';
 
 class PostDetailsPage extends StatefulWidget {
+  final int _id;
   final Client _httpClient;
 
-  const PostDetailsPage({super.key, required Client httpClient})
-    : _httpClient = httpClient;
+  const PostDetailsPage({
+    super.key,
+    required int id,
+    required Client httpClient,
+  }) : _id = id,
+       _httpClient = httpClient;
 
   @override
   State<PostDetailsPage> createState() => _PostDetailsPageState();
 }
 
 class _PostDetailsPageState extends State<PostDetailsPage> {
-  dynamic post;
+  PostDetailsCubit? _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = PostDetailsCubit(id: widget._id, httpClient: widget._httpClient);
+  }
+
+  @override
+  void dispose() {
+    _cubit?.close();
+    _cubit = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,28 +42,22 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
     final id = args?['id'] ?? 'unknown';
 
-    return FutureBuilder<dynamic>(
-      future: widget._httpClient.get(
-        Uri.parse('https://jsonplaceholder.typicode.com/posts/$id'),
+    return BlocBuilder<PostDetailsCubit, PostDetailsState>(
+      bloc: _cubit?..fetchPost(),
+      builder: (cubit, state) => Scaffold(
+        appBar: AppBar(
+          key: Key('details_app_bar'),
+          title: const Text('Post details'),
+        ),
+        body: switch (state) {
+          PostDetailsLoading() => Container(),
+          PostDetailsLoaded() => PostDetailsItem(
+            id: id,
+            title: state.post['title'],
+            body: state.post['body'],
+          ),
+        },
       ),
-      builder: (post, response) {
-        if (response.hasData) {
-          dynamic data = json.decode(response.data!.body);
-          return Scaffold(
-            appBar: AppBar(
-              key: Key('details_app_bar'),
-              title: const Text('Post details'),
-            ),
-            body: PostDetailsItem(
-              id: id,
-              title: data['title'],
-              body: data['body'],
-            ),
-          );
-        } else {
-          return Container();
-        }
-      },
     );
   }
 }

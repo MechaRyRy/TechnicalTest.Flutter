@@ -4,6 +4,7 @@ import 'package:flutter_tech_task/injection.dart';
 import 'package:flutter_tech_task/presentation/post_comments/widgets/post_comments_page.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_page.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/widgets/posts_list_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       initialRoute: 'list/',
       navigatorKey: getIt<AppNavigator>().navigatorKey,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'),
+        Locale('es'),
+      ],
       routes: {
         "list/": (context) => const PostsListPage(),
         "details/": (context) {

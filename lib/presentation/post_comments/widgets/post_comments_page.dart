@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_task/injection.dart';
+import 'package:flutter_tech_task/l10n/app_localizations.dart';
 import 'package:flutter_tech_task/presentation/post_comments/cubit/post_comments_cubit.dart';
 import 'package:flutter_tech_task/presentation/post_comments/cubit/post_comments_state.dart';
 import 'package:flutter_tech_task/presentation/post_comments/injection.dart';
@@ -31,7 +32,10 @@ class _PostCommentsPageState extends State<PostCommentsPage> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       key: Key('comments_app_bar'),
-      title: const Text(key: Key('comments_app_bar_title'), 'Post Comments'),
+      title: Text(
+        key: Key('comments_app_bar_title'),
+        AppLocalizations.of(context)!.comments_page_title,
+      ),
     ),
     body: BlocBuilder<PostCommentsCubit, PostCommentsState>(
       bloc: getIt<PostCommentsCubit>()..refreshPostComments(),

@@ -1,0 +1,22 @@
+{
+    "posts_page_title": "Posts",
+    "@posts_page_title": {
+        "description": "The title used on the list of posts page"
+    },
+    "tab_all": "All",
+    "@tab_all": {
+        "description": "Label for the tab that shows all posts"
+    },
+    "tab_offline": "Offline",
+    "@tab_offline": {
+        "description": "Label for the tab that shows offline posts"
+    },
+    "details_page_title": "Post Details",
+    "@details_page_title": {
+        "description": "The title used on the post details page"
+    },
+    "comments_page_title": "Post Comments",
+    "@comments_page_title": {
+        "description": "The title used on the comments page"
+    }
+}

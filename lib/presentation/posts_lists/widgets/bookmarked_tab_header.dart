@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_task/injection.dart';
+import 'package:flutter_tech_task/l10n/app_localizations.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/cubit/bookmark_tab_header_cubit.dart';
 
 class BookmarkedTabHeader extends StatelessWidget {
@@ -13,7 +14,10 @@ class BookmarkedTabHeader extends StatelessWidget {
       builder: (context, state) {
         return Tab(
           key: const Key('posts_tab_bookmarked'),
-          child: Badge(label: Text(key: Key('offline_posts_indicator'), '$state'), child: Text('Offline')),
+          child: Badge(
+            label: Text(key: Key('offline_posts_indicator'), '$state'),
+            child: Text(AppLocalizations.of(context)!.tab_offline),
+          ),
         );
       },
     );

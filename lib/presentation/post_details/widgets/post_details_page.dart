@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_task/injection.dart';
+import 'package:flutter_tech_task/l10n/app_localizations.dart';
 import 'package:flutter_tech_task/presentation/post_details/cubit/post_details_cubit.dart';
 import 'package:flutter_tech_task/presentation/post_details/injection.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_item.dart';
@@ -45,7 +46,10 @@ class _PostDetailsPageContent extends StatelessWidget {
       builder: (cubit, state) => Scaffold(
         appBar: AppBar(
           key: Key('details_app_bar'),
-          title: const Text(key: Key('details_app_bar_title'), 'Post details'),
+          title: Text(
+            key: Key('details_app_bar_title'),
+            AppLocalizations.of(context)!.details_page_title,
+          ),
           actions: switch (state) {
             PostDetailsLoading() => [],
             PostDetailsLoaded(

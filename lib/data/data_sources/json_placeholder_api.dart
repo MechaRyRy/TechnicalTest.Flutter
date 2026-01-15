@@ -44,6 +44,7 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
             id: postId,
             title: body['title'],
             body: body['body'],
+            isBookmarked: false,
           );
         }
         return throw Exception('Invalid response format');

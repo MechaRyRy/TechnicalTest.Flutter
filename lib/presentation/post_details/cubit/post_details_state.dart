@@ -14,9 +14,32 @@ class PostDetailsLoading extends PostDetailsState {
 
 class PostDetailsLoaded extends PostDetailsState {
   final PostDetails postDetails;
+  final PostDetailsAction action;
 
-  const PostDetailsLoaded({required this.postDetails});
+  const PostDetailsLoaded({required this.postDetails, required this.action});
 
   @override
-  List<Object?> get props => [postDetails];
+  List<Object?> get props => [postDetails, action];
+}
+
+sealed class PostDetailsAction extends Equatable {
+  const PostDetailsAction();
+}
+
+class AddBookmark extends PostDetailsAction {
+  final int postId;
+
+  const AddBookmark({required this.postId});
+
+  @override
+  List<Object?> get props => [postId];
+}
+
+class RemoveBookmark extends PostDetailsAction {
+  final int postId;
+
+  const RemoveBookmark({required this.postId});
+
+  @override
+  List<Object?> get props => [postId];
 }

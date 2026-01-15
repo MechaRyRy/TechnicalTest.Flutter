@@ -19,7 +19,14 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
         .listen((postDetails) {
           switch (postDetails) {
             case Success<PostDetails>():
-              maybeEmit(PostDetailsLoaded(postDetails: postDetails.value));
+              maybeEmit(
+                PostDetailsLoaded(
+                  postDetails: postDetails.value,
+                  action: postDetails.value.isBookmarked
+                      ? RemoveBookmark(postId: postDetails.value.id)
+                      : AddBookmark(postId: postDetails.value.id),
+                ),
+              );
             case Failure<PostDetails>():
             case Loading<PostDetails>():
               maybeEmit(PostDetailsLoading());
@@ -36,4 +43,6 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
     _postDetailsSubscription = null;
     return super.close();
   }
+
+  void performAction(PostDetailsAction action) {}
 }

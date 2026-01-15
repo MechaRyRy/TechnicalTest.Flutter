@@ -46,6 +46,12 @@ class _PostDetailsPageContent extends StatelessWidget {
         appBar: AppBar(
           key: Key('details_app_bar'),
           title: const Text('Post details'),
+          actions: switch (state) {
+            PostDetailsLoading() => [],
+            PostDetailsLoaded(action: final action) => [
+              BookmarkIcon(action: action),
+            ],
+          },
         ),
         body: switch (state) {
           PostDetailsLoading() => Container(),
@@ -58,4 +64,20 @@ class _PostDetailsPageContent extends StatelessWidget {
       ),
     );
   }
+}
+
+class BookmarkIcon extends StatelessWidget {
+  final PostDetailsAction action;
+
+  const BookmarkIcon({super.key, required this.action});
+
+  @override
+  Widget build(BuildContext context) => IconButton(
+    key: Key('details_bookmark_button'),
+    icon: switch (action) {
+      AddBookmark() => const Icon(Icons.bookmark_add_outlined),
+      RemoveBookmark() => const Icon(Icons.bookmark),
+    },
+    onPressed: () => context.read<PostDetailsCubit>().performAction(action),
+  );
 }

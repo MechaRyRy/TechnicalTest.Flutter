@@ -29,5 +29,6 @@ class PostDetailsRepository extends PostDetailsRepositoryContract {
         .then((postDetails) => _subject.add(Result.success(postDetails)));
   }
 
+  @override
   void dispose() => _subject.close();
 }

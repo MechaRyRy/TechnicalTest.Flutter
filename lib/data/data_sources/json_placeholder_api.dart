@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_tech_task/domain/entities/post_comment.dart';
 import 'package:flutter_tech_task/domain/entities/post_details.dart';
 import 'package:flutter_tech_task/domain/entities/post_summary.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +8,7 @@ import 'package:http/http.dart' as http;
 abstract class JsonPlaceholderApi {
   Future<List<PostSummary>> getPosts();
   Future<PostDetails> getPostDetails(int postId);
+  Future<List<PostComment>> getPostComments(int postId);
 }
 
 class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
@@ -54,5 +56,31 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
           );
         }
         return throw Exception('Invalid response format');
+      });
+
+  @override
+  Future<List<PostComment>> getPostComments(int postId) => _httpClient
+      .get(
+        Uri.parse(
+          'https://jsonplaceholder.typicode.com/posts/$postId/comments/',
+        ),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      )
+      .then((response) {
+        List<dynamic> responseList =
+            json.decode(response.body) as List<dynamic>;
+        final posts = responseList
+            .map(
+              (post) => PostComment(
+                commentId: post['id'],
+                postId: post['postId'],
+                name: post['name'],
+                email: post['email'],
+                body: post['body'],
+              ),
+            )
+            .toList();
+
+        return posts;
       });
 }

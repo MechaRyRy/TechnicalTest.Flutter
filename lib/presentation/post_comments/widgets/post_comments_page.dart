@@ -18,7 +18,7 @@ class _PostCommentsPageState extends State<PostCommentsPage> {
   @override
   void initState() {
     super.initState();
-    createPostCommentsPageScopedInjection(getIt);
+    createPostCommentsPageScopedInjection(getIt, widget._id);
   }
 
   @override
@@ -34,7 +34,7 @@ class _PostCommentsPageState extends State<PostCommentsPage> {
       title: const Text(key: Key('comments_app_bar_title'), 'Post Comments'),
     ),
     body: BlocBuilder<PostCommentsCubit, PostCommentsState>(
-      bloc: getIt<PostCommentsCubit>(),
+      bloc: getIt<PostCommentsCubit>()..refreshPostComments(),
       builder: (context, state) {
         switch (state) {
           case PostCommentsLoading():

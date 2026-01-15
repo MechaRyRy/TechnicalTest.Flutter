@@ -9,7 +9,6 @@ class PostSummaryRepository extends PostSummaryRepositoryContract {
   final JsonPlaceholderApi _jsonPlaceholderApi;
   final JsonPlaceholderStore _jsonPlaceholderStore;
   final BehaviorSubject<Result<List<PostSummary>>> _subject = BehaviorSubject();
-  Stream<Result<List<PostSummary>>> watchData() => _subject.stream;
 
   PostSummaryRepository({
     required JsonPlaceholderApi jsonPlaceholderApi,

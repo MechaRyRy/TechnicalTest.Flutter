@@ -45,7 +45,7 @@ class _PostDetailsPageContent extends StatelessWidget {
       builder: (cubit, state) => Scaffold(
         appBar: AppBar(
           key: Key('details_app_bar'),
-          title: const Text('Post details'),
+          title: const Text(key: Key('details_app_bar_title'), 'Post details'),
           actions: switch (state) {
             PostDetailsLoading() => [],
             PostDetailsLoaded(action: final action) => [

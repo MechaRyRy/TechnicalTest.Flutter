@@ -24,6 +24,8 @@ const postItem2Key = Key('post_item:2');
 const postItem3Key = Key('post_item:3');
 
 const detailsAppBarKey = Key('details_app_bar');
+const detailsAppBarTitleKey = Key('details_app_bar_title');
+const detailsBookmarkButtonKey = Key('details_bookmark_button');
 const postDetailsTitle1Key = Key('post_details_title:1');
 const postDetailsBody1Key = Key('post_details_body:1');
 
@@ -149,9 +151,39 @@ void main() {
       expect(find.byType(PostDetailsPage), findsOneWidget);
       verifyUiElements(tester, [
         const Present(key: detailsAppBarKey),
+        const Present(key: detailsAppBarTitleKey),
+        const Present(
+          key: detailsBookmarkButtonKey,
+          isRightOf: detailsAppBarTitleKey,
+        ),
         const Present(key: postDetailsTitle1Key, isBelow: detailsAppBarKey),
         const Present(key: postDetailsBody1Key, isBelow: postDetailsTitle1Key),
       ]);
+    });
+
+    testWidgets('Tapping bookmark updates the icon', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(postItem1Key), findsOneWidget);
+      await tester.tap(find.byKey(postItem1Key));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostDetailsPage), findsOneWidget);
+      expect(find.byIcon(Icons.bookmark_add_outlined), findsOneWidget);
+
+      await tester.tap(find.byKey(detailsBookmarkButtonKey));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.bookmark), findsOneWidget);
+
+      await tester.tap(find.byKey(detailsBookmarkButtonKey));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.bookmark_add_outlined), findsOneWidget);
     });
   });
 }

@@ -4,5 +4,7 @@ import 'package:flutter_tech_task/domain/entities/result.dart';
 abstract class PostDetailsRepositoryContract {
   Stream<Result<PostDetails>> watchPostDetails();
   Future<void> refreshPostDetails();
+  Future<void> addBookmark();
+  Future<void> removeBookmark();
   void dispose();
 }

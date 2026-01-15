@@ -65,5 +65,21 @@ class PostDetailsRepository extends PostDetailsRepositoryContract {
   }
 
   @override
+  Future<void> addBookmark() async {
+    final value = _networkState.value.value;
+    if (value != null) {
+      _jsonPlaceholderStore.savePostForOffline(value);
+    }
+  }
+
+  @override
+  Future<void> removeBookmark() async {
+    final value = _networkState.value.value;
+    if (value != null) {
+      _jsonPlaceholderStore.removePostFromOffline(value.id);
+    }
+  }
+
+  @override
   void dispose() => _networkState.close();
 }

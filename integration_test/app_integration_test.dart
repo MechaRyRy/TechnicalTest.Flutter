@@ -18,6 +18,9 @@ import '../test/utils/ui_verification.dart';
 Client httpClient = Client();
 
 const postsAppBarKey = Key('posts_app_bar');
+const postsTabBarKey = Key('posts_tab_bar');
+const postsTabAllKey = Key('posts_tab_all');
+const postsTabBookmarkedKey = Key('posts_tab_bookmarked');
 const postsListKey = Key('posts_list');
 const postItem1Key = Key('post_item:1');
 const postItem2Key = Key('post_item:2');
@@ -84,6 +87,9 @@ void main() {
       expect(find.byType(PostsListPage), findsOneWidget);
       verifyUiElements(tester, [
         const Present(key: postsAppBarKey),
+        const Present(key: postsTabBarKey, isBelow: postsAppBarKey),
+        const Present(key: postsTabAllKey, isLeftOf: postsTabBookmarkedKey),
+        const Present(key: postsTabBookmarkedKey, isRightOf: postsTabAllKey),
         const Present(key: postsListKey, isBelow: postsAppBarKey),
         const Present(key: postItem1Key),
         const Present(key: postItem2Key, isBelow: postItem1Key),

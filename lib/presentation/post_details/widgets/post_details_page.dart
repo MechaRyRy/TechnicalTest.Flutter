@@ -48,9 +48,14 @@ class _PostDetailsPageContent extends StatelessWidget {
           title: const Text(key: Key('details_app_bar_title'), 'Post details'),
           actions: switch (state) {
             PostDetailsLoading() => [],
-            PostDetailsLoaded(action: final action) => [
-              BookmarkIcon(action: action),
-            ],
+            PostDetailsLoaded(
+              postDetails: final postDetails,
+              action: final action,
+            ) =>
+              [
+                _BookmarkIcon(action: action),
+                _CommentsIcon(postId: postDetails.id),
+              ],
           },
         ),
         body: switch (state) {
@@ -66,10 +71,10 @@ class _PostDetailsPageContent extends StatelessWidget {
   }
 }
 
-class BookmarkIcon extends StatelessWidget {
-  final PostDetailsAction action;
+class _BookmarkIcon extends StatelessWidget {
+  final BookmarkAction action;
 
-  const BookmarkIcon({super.key, required this.action});
+  const _BookmarkIcon({required this.action});
 
   @override
   Widget build(BuildContext context) => IconButton(
@@ -79,5 +84,19 @@ class BookmarkIcon extends StatelessWidget {
       RemoveBookmark() => const Icon(Icons.bookmark),
     },
     onPressed: () => context.read<PostDetailsCubit>().performAction(action),
+  );
+}
+
+class _CommentsIcon extends StatelessWidget {
+  final int postId;
+
+  const _CommentsIcon({required this.postId});
+
+  @override
+  Widget build(BuildContext context) => IconButton(
+    key: Key('details_comments_icon'),
+    icon: const Icon(Icons.comment),
+    onPressed: () =>
+        Navigator.of(context).pushNamed('comments/', arguments: {'id': postId}),
   );
 }

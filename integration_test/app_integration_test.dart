@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tech_task/data/data_sources/json_placeholder_api.dart';
 import 'package:flutter_tech_task/injection.dart';
+import 'package:flutter_tech_task/presentation/post_comments/widgets/post_comments_page.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_item.dart';
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_page.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/widgets/post_item.dart';
@@ -237,6 +238,28 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.bookmark_add_outlined), findsOneWidget);
+    });
+  });
+
+  group('Post Comments Page', () {
+    testWidgets('Navigates to comments page when tapping comments icon', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(postItem1Key), findsOneWidget);
+      await tester.tap(find.byKey(postItem1Key));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostDetailsPage), findsOneWidget);
+      expect(find.byIcon(Icons.comment), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.comment));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostCommentsPage), findsOneWidget);
     });
   });
 }

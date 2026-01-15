@@ -14,7 +14,7 @@ class PostDetailsLoading extends PostDetailsState {
 
 class PostDetailsLoaded extends PostDetailsState {
   final PostDetails postDetails;
-  final PostDetailsAction action;
+  final BookmarkAction action;
 
   const PostDetailsLoaded({required this.postDetails, required this.action});
 
@@ -22,11 +22,11 @@ class PostDetailsLoaded extends PostDetailsState {
   List<Object?> get props => [postDetails, action];
 }
 
-sealed class PostDetailsAction extends Equatable {
-  const PostDetailsAction();
+sealed class BookmarkAction extends Equatable {
+  const BookmarkAction();
 }
 
-class AddBookmark extends PostDetailsAction {
+class AddBookmark extends BookmarkAction {
   final int postId;
 
   const AddBookmark({required this.postId});
@@ -35,7 +35,7 @@ class AddBookmark extends PostDetailsAction {
   List<Object?> get props => [postId];
 }
 
-class RemoveBookmark extends PostDetailsAction {
+class RemoveBookmark extends BookmarkAction {
   final int postId;
 
   const RemoveBookmark({required this.postId});

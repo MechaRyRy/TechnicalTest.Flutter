@@ -17,7 +17,10 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
 
   @override
   Future<List<PostSummary>> getPosts() => _httpClient
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/'))
+      .get(
+        Uri.parse('https://jsonplaceholder.typicode.com/posts/'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      )
       .then((response) {
         List<dynamic> responseList =
             json.decode(response.body) as List<dynamic>;
@@ -36,7 +39,10 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
 
   @override
   Future<PostDetails> getPostDetails(int postId) => _httpClient
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/$postId'))
+      .get(
+        Uri.parse('https://jsonplaceholder.typicode.com/posts/$postId'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      )
       .then((response) {
         final body = json.decode(response.body);
         if (body is Map<String, dynamic>) {

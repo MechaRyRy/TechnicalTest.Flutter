@@ -44,7 +44,7 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
     return super.close();
   }
 
-  void performAction(PostDetailsAction action) {
+  void performAction(BookmarkAction action) {
     switch (action) {
       case AddBookmark():
         _postDetailsRepositoryContract.addBookmark();

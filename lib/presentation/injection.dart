@@ -6,5 +6,7 @@ Future<void> createPresentationDependencies(GetIt getIt) async {
   getIt.registerFactoryParam<PostDetailsCubit, int, void>(
     (id, _) => PostDetailsCubit(id: id, jsonPlaceholderApi: getIt()),
   );
-  getIt.registerFactory(() => PostsListCubit(jsonPlaceholderApi: getIt()));
+  getIt.registerFactory(
+    () => PostsListCubit(postSummaryRepositoryContract: getIt()),
+  );
 }

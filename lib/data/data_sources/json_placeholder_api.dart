@@ -6,7 +6,7 @@ import 'package:flutter_tech_task/domain/entities/result.dart';
 import 'package:http/http.dart' as http;
 
 abstract class JsonPlaceholderApi {
-  Future<Result<List<PostSummary>>> getPosts();
+  Future<List<PostSummary>> getPosts();
   Future<Result<PostDetails>> getPostDetails(int postId);
 }
 
@@ -17,7 +17,7 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
     : _httpClient = httpClient;
 
   @override
-  Future<Result<List<PostSummary>>> getPosts() => _httpClient
+  Future<List<PostSummary>> getPosts() => _httpClient
       .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/'))
       .then((response) {
         List<dynamic> responseList =
@@ -32,14 +32,8 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
             )
             .toList();
 
-        return Result.success(posts);
-      })
-      .onError<Exception>(
-        (e, _) => Result<List<PostSummary>>.failureFromException(error: e),
-      )
-      .onError<Error>(
-        (e, _) => Result<List<PostSummary>>.failureFromError(error: e),
-      );
+        return posts;
+      });
 
   @override
   Future<Result<PostDetails>> getPostDetails(int postId) => _httpClient

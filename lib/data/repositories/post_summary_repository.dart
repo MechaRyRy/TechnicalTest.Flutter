@@ -40,4 +40,9 @@ class PostSummaryRepository extends PostSummaryRepositoryContract {
           );
         });
   }
+
+  @override
+  void dispose() {
+    _subject.close();
+  }
 }

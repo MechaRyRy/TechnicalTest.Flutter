@@ -3,7 +3,7 @@ import 'package:flutter_tech_task/domain/repositories/post_details_repository_co
 import 'package:flutter_tech_task/presentation/post_details/cubit/post_details_cubit.dart';
 import 'package:get_it/get_it.dart';
 
-const _scopeKey = 'PostDetailsCubit';
+const _scopeKey = 'PostDetailsInjection';
 
 Future<void> createScopedPostDetailsInjection(GetIt getIt, int postId) async {
   getIt.pushNewScope(scopeName: _scopeKey);

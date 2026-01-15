@@ -22,7 +22,7 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
               maybeEmit(
                 PostDetailsLoaded(
                   postDetails: postDetails.value,
-                  action: postDetails.value.isBookmarked
+                  action: postDetails.value.isOffline
                       ? RemoveBookmark(postId: postDetails.value.id)
                       : AddBookmark(postId: postDetails.value.id),
                 ),

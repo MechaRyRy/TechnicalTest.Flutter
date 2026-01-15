@@ -44,6 +44,8 @@ sealed class Failure<T> extends Result<T> {
   const factory Failure.fromError({required Error error, T? value}) =
       ErrorFailure<T>;
 
+  Failure<T> copyWithValue(T? newValue);
+
   Failure<T> copyWith({T? value}) {
     switch (this) {
       case ExceptionFailure<T>():
@@ -66,6 +68,10 @@ class ExceptionFailure<T> extends Failure<T> {
   const ExceptionFailure({required this.error, super.value});
 
   @override
+  ExceptionFailure<T> copyWithValue(T? newValue) =>
+      ExceptionFailure(error: error, value: newValue);
+
+  @override
   List<Object?> get props => [error, value];
 }
 
@@ -75,5 +81,27 @@ class ErrorFailure<T> extends Failure<T> {
   const ErrorFailure({required this.error, super.value});
 
   @override
+  ErrorFailure<T> copyWithValue(T? newValue) =>
+      ErrorFailure(error: error, value: newValue);
+
+  @override
   List<Object?> get props => [error, value];
+}
+
+extension ResultMapping<T> on Result<T> {
+  Result<T> map(T Function(T value) transformer) {
+    final state = this;
+    if (state is Success<T>) {
+      return Success(transformer(state.value));
+    } else if (state is Loading<T>) {
+      return Loading(
+        value: state.value != null ? transformer(state.value as T) : null,
+      );
+    } else if (state is Failure<T>) {
+      return state.copyWithValue(
+        state.value != null ? transformer(state.value as T) : null,
+      );
+    }
+    return this;
+  }
 }

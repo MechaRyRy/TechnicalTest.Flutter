@@ -9,7 +9,11 @@ Future<void> createScopedPostDetailsInjection(GetIt getIt, int postId) async {
   getIt.pushNewScope(scopeName: _scopeKey);
 
   getIt.registerLazySingleton<PostDetailsRepositoryContract>(
-    () => PostDetailsRepository(postId: postId, jsonPlaceholderApi: getIt()),
+    () => PostDetailsRepository(
+      postId: postId,
+      jsonPlaceholderApi: getIt(),
+      jsonPlaceholderStore: getIt(),
+    ),
     dispose: (repo) => repo.dispose(),
   );
 

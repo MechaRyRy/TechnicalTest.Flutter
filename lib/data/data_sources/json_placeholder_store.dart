@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_tech_task/data/data_sources/object_box.dart/object_box_persistence.dart';
 import 'package:flutter_tech_task/domain/entities/post_details.dart';
 import 'package:flutter_tech_task/domain/entities/post_summary.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,6 +10,50 @@ abstract class JsonPlaceholderStore {
   Future<void> savePostForOffline(PostDetails postDetails);
   Future<void> removePostFromOffline(int postId);
   Future<bool> isPostOffline(int postId);
+}
+
+class ObjectBoxJsonPlaceholderStore implements JsonPlaceholderStore {
+  final ObjectBoxPersistence _objectBox;
+
+  ObjectBoxJsonPlaceholderStore({required ObjectBoxPersistence objectBox})
+    : _objectBox = objectBox;
+
+  @override
+  Stream<List<PostSummary>> watchOfflinePosts() {
+    return _objectBox
+        .persistentSummariesBox()
+        .query()
+        .watch(triggerImmediately: true)
+        .map((query) {
+          final summaries = query.find();
+          return summaries
+              .map(
+                (e) => PostSummary(id: e.postId, title: e.title, body: e.body),
+              )
+              .toList();
+        });
+  }
+
+  @override
+  Future<void> savePostForOffline(PostDetails postDetails) async {
+    final summary = PersistentPostSummary(
+      postId: postDetails.id,
+      title: postDetails.title,
+      body: postDetails.body,
+    );
+    _objectBox.persistentSummariesBox().put(summary);
+  }
+
+  @override
+  Future<void> removePostFromOffline(int postId) async {
+    _objectBox.persistentSummariesBox().remove(postId);
+  }
+
+  @override
+  Future<bool> isPostOffline(int postId) async {
+    final summary = _objectBox.persistentSummariesBox().get(postId);
+    return summary != null;
+  }
 }
 
 class InMemoryJsonPlaceholderStore implements JsonPlaceholderStore {

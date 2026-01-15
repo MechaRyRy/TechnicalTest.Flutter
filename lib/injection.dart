@@ -31,7 +31,7 @@ Future<void> createApplicationLevelInjection(GetIt getIt) async {
         HttpBasedJsonPlaceholderApi(httpClient: getIt()),
       );
       getIt.registerSingleton<JsonPlaceholderStore>(
-        InMemoryJsonPlaceholderStore(),
+        ObjectBoxJsonPlaceholderStore(objectBox: getIt()),
       );
     },
   );

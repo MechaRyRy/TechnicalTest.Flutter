@@ -1,4 +1,6 @@
 import 'package:flutter_tech_task/objectbox.g.dart';
+// ignore: unnecessary_import
+import 'package:objectbox/objectbox.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -23,10 +25,16 @@ class ObjectBoxPersistence {
 
 @Entity()
 class PersistentPostSummary {
-  @Id()
   int id;
+  @Index()
+  int postId;
   String title;
   String body;
 
-  PersistentPostSummary({this.id = 0, required this.title, required this.body});
+  PersistentPostSummary({
+    this.id = 0,
+    required this.postId,
+    required this.title,
+    required this.body,
+  });
 }

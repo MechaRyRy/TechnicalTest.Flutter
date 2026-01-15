@@ -22,7 +22,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(1, 344327742278612341),
     name: 'PersistentPostSummary',
-    lastPropertyId: const obx_int.IdUid(3, 3945761417521546304),
+    lastPropertyId: const obx_int.IdUid(4, 1025258592232018499),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -42,6 +42,13 @@ final _entities = <obx_int.ModelEntity>[
         name: 'body',
         type: 9,
         flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 1025258592232018499),
+        name: 'postId',
+        type: 6,
+        flags: 8,
+        indexId: const obx_int.IdUid(1, 2836297160896944732),
       ),
     ],
     relations: <obx_int.ModelRelation>[],
@@ -93,7 +100,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
     generatorVersion: obx_int.GeneratorVersion.v2025_12_16,
     entities: _entities,
     lastEntityId: const obx_int.IdUid(1, 344327742278612341),
-    lastIndexId: const obx_int.IdUid(0, 0),
+    lastIndexId: const obx_int.IdUid(1, 2836297160896944732),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
@@ -117,10 +124,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
       objectToFB: (PersistentPostSummary object, fb.Builder fbb) {
         final titleOffset = fbb.writeString(object.title);
         final bodyOffset = fbb.writeString(object.body);
-        fbb.startTable(4);
+        fbb.startTable(5);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, titleOffset);
         fbb.addOffset(2, bodyOffset);
+        fbb.addInt64(3, object.postId);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -133,6 +141,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           4,
           0,
         );
+        final postIdParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          10,
+          0,
+        );
         final titleParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 6, '');
@@ -141,6 +155,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         ).vTableGet(buffer, rootOffset, 8, '');
         final object = PersistentPostSummary(
           id: idParam,
+          postId: postIdParam,
           title: titleParam,
           body: bodyParam,
         );
@@ -168,5 +183,10 @@ class PersistentPostSummary_ {
   /// See [PersistentPostSummary.body].
   static final body = obx.QueryStringProperty<PersistentPostSummary>(
     _entities[0].properties[2],
+  );
+
+  /// See [PersistentPostSummary.postId].
+  static final postId = obx.QueryIntegerProperty<PersistentPostSummary>(
+    _entities[0].properties[3],
   );
 }

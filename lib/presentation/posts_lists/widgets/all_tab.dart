@@ -51,9 +51,8 @@ class _AllTabContent extends StatelessWidget {
                   id: post.id,
                   title: post.title,
                   body: post.body,
-                  onTap: () => Navigator.of(
-                    context,
-                  ).pushNamed('details/', arguments: {'id': post.id}),
+                  onTap: () =>
+                      context.read<PostsListCubit>().navigateToDetails(post.id),
                 ),
               )
               .toList(),

@@ -18,7 +18,10 @@ Future<void> createScopedPostDetailsInjection(GetIt getIt, int postId) async {
   );
 
   getIt.registerFactory<PostDetailsCubit>(
-    () => PostDetailsCubit(postDetailsRepositoryContract: getIt()),
+    () => PostDetailsCubit(
+      appNavigator: getIt(),
+      postDetailsRepositoryContract: getIt(),
+    ),
   );
 }
 

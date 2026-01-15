@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_tech_task/app_navigator.dart';
 import 'package:flutter_tech_task/domain/entities/post_details.dart';
 import 'package:flutter_tech_task/domain/entities/result.dart';
 import 'package:flutter_tech_task/domain/repositories/post_details_repository_contract.dart';
@@ -7,12 +8,16 @@ import 'package:flutter_tech_task/presentation/post_details/cubit/post_details_s
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
 
 class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
+  final AppNavigator _appNavigator;
   final PostDetailsRepositoryContract _postDetailsRepositoryContract;
+
   StreamSubscription<Result<PostDetails>>? _postDetailsSubscription;
 
   PostDetailsCubit({
+    required AppNavigator appNavigator,
     required PostDetailsRepositoryContract postDetailsRepositoryContract,
-  }) : _postDetailsRepositoryContract = postDetailsRepositoryContract,
+  }) : _appNavigator = appNavigator,
+       _postDetailsRepositoryContract = postDetailsRepositoryContract,
        super(PostDetailsLoading()) {
     _postDetailsSubscription ??= _postDetailsRepositoryContract
         .watchPostDetails() //
@@ -45,6 +50,9 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
         _postDetailsRepositoryContract.removeBookmark();
     }
   }
+
+  void navigateToComments(int postId) =>
+      _appNavigator.pushNamed('comments/', arguments: {'id': postId});
 
   @override
   Future<void> close() {

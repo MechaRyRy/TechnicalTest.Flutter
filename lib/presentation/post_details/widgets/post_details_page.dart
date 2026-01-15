@@ -97,6 +97,6 @@ class _CommentsIcon extends StatelessWidget {
     key: Key('details_comments_icon'),
     icon: const Icon(Icons.comment),
     onPressed: () =>
-        Navigator.of(context).pushNamed('comments/', arguments: {'id': postId}),
+        context.read<PostDetailsCubit>().navigateToComments(postId),
   );
 }

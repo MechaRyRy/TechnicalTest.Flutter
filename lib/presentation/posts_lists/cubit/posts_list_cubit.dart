@@ -39,6 +39,9 @@ class PostsListCubit extends SafeEmissionCubit<PostsListState> {
 
   void loadPosts() => _watchPostSummariesUseCase.refresh();
 
+  void navigateToDetails(int id) =>
+      _appNavigator.pushNamed('details/', arguments: {'id': id});
+
   @override
   Future<void> close() {
     _postsSubscription?.cancel();

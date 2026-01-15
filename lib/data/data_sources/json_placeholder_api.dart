@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter_tech_task/domain/entities/post_details.dart';
 import 'package:flutter_tech_task/domain/entities/post_summary.dart';
-import 'package:flutter_tech_task/domain/entities/result.dart';
 import 'package:http/http.dart' as http;
 
 abstract class JsonPlaceholderApi {
   Future<List<PostSummary>> getPosts();
-  Future<Result<PostDetails>> getPostDetails(int postId);
+  Future<PostDetails> getPostDetails(int postId);
 }
 
 class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
@@ -36,21 +35,17 @@ class HttpBasedJsonPlaceholderApi implements JsonPlaceholderApi {
       });
 
   @override
-  Future<Result<PostDetails>> getPostDetails(int postId) => _httpClient
+  Future<PostDetails> getPostDetails(int postId) => _httpClient
       .get(Uri.parse('https://jsonplaceholder.typicode.com/posts/$postId'))
       .then((response) {
         final body = json.decode(response.body);
         if (body is Map<String, dynamic>) {
-          return Result.success(
-            PostDetails(id: postId, title: body['title'], body: body['body']),
+          return PostDetails(
+            id: postId,
+            title: body['title'],
+            body: body['body'],
           );
         }
-        return Result<PostDetails>.failureFromException(
-          error: Exception('Invalid response format'),
-        );
-      })
-      .onError<Exception>(
-        (e, _) => Result<PostDetails>.failureFromException(error: e),
-      )
-      .onError<Error>((e, _) => Result<PostDetails>.failureFromError(error: e));
+        return throw Exception('Invalid response format');
+      });
 }

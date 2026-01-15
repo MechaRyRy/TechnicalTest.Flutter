@@ -4,7 +4,8 @@ import 'package:get_it/get_it.dart';
 
 Future<void> createPresentationDependencies(GetIt getIt) async {
   getIt.registerFactoryParam<PostDetailsCubit, int, void>(
-    (id, _) => PostDetailsCubit(id: id, jsonPlaceholderApi: getIt()),
+    (id, _) =>
+        PostDetailsCubit(postDetailsRepositoryContract: getIt(param1: id)),
   );
   getIt.registerFactory(
     () => PostsListCubit(postSummaryRepositoryContract: getIt()),

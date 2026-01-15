@@ -12,7 +12,7 @@ class PostDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider<PostDetailsCubit>(
-    create: (context) => getIt<PostDetailsCubit>(param1: _id)..fetchPost(),
+    create: (context) => getIt<PostDetailsCubit>(param1: _id)..loadDetails(),
     child: _PostDetailsPageContent(),
   );
 }

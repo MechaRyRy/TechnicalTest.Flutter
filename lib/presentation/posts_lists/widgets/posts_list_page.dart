@@ -11,7 +11,7 @@ class PostsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PostsListCubit>(
-      create: (context) => getIt<PostsListCubit>()..observe(),
+      create: (context) => getIt<PostsListCubit>()..loadPosts(),
       child: _PostsListPageContent(),
     );
   }

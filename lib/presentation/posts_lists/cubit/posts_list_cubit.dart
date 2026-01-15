@@ -14,9 +14,7 @@ class PostsListCubit extends SafeEmissionCubit<PostsListState> {
   PostsListCubit({
     required PostSummaryRepositoryContract postSummaryRepositoryContract,
   }) : _postSummaryRepositoryContract = postSummaryRepositoryContract,
-       super(PostsListLoading());
-
-  void observe() {
+       super(PostsListLoading()) {
     _postsSubscription ??= _postSummaryRepositoryContract
         .watchPostSummaries()
         .listen((postsResult) {
@@ -28,8 +26,9 @@ class PostsListCubit extends SafeEmissionCubit<PostsListState> {
               maybeEmit(PostsListLoading());
           }
         });
-    _postSummaryRepositoryContract.refreshPostSummaries();
   }
+
+  void loadPosts() => _postSummaryRepositoryContract.refreshPostSummaries();
 
   @override
   Future<void> close() {

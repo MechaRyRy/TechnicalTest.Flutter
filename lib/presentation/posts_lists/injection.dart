@@ -1,5 +1,3 @@
-import 'package:flutter_tech_task/data/repositories/post_summary_repository.dart';
-import 'package:flutter_tech_task/domain/repositories/post_summary_repository_contract.dart';
 import 'package:flutter_tech_task/domain/usecases/number_of_offline_posts_use_case.dart';
 import 'package:flutter_tech_task/domain/usecases/watch_post_summaries_use_case.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/cubit/bookmark_tab_header_cubit.dart';
@@ -14,14 +12,6 @@ Future<void> createPostsListPageScopedInjection(GetIt getIt) async {
   getIt.pushNewScope(
     scopeName: _postsPageScopeKey,
     init: (getIt) {
-      getIt.registerLazySingleton<PostSummaryRepositoryContract>(
-        () => PostSummaryRepository(
-          jsonPlaceholderApi: getIt(),
-          jsonPlaceholderStore: getIt(),
-        ),
-        dispose: (repo) => repo.dispose(),
-      );
-
       getIt.registerFactory<NumberOfOfflinePostsUseCase>(
         () => NumberOfOfflinePostsUseCase(repository: getIt()),
       );

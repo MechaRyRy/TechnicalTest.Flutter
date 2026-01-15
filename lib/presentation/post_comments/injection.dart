@@ -22,7 +22,7 @@ Future<void> createPostCommentsPageScopedInjection(
   );
 }
 
-Future<void> disposePostsListPageInjection(GetIt getIt) async {
+Future<void> disposePostCommentsPageScopedInjection(GetIt getIt) async {
   if (getIt.hasScope(_commentsPageScopeKey)) {
     await getIt.dropScope(_commentsPageScopeKey);
   }

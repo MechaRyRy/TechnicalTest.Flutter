@@ -23,7 +23,7 @@ class _PostCommentsPageState extends State<PostCommentsPage> {
 
   @override
   void dispose() {
-    disposePostsListPageInjection(getIt);
+    disposePostCommentsPageScopedInjection(getIt);
     super.dispose();
   }
 

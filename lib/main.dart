@@ -4,8 +4,8 @@ import 'package:flutter_tech_task/presentation/post_comments/widgets/post_commen
 import 'package:flutter_tech_task/presentation/post_details/widgets/post_details_page.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/widgets/posts_list_page.dart';
 
-void main() {
-  setupInjection();
+Future<void> main() async {
+  await createApplicationLevelInjection(getIt);
   runApp(const MyApp());
 }
 

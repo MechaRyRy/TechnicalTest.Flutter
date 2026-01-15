@@ -38,7 +38,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    setupInjection();
+    createApplicationLevelInjection(getIt);
     getIt.allowReassignment = true;
     getIt.registerSingleton<JsonPlaceholderApi>(
       HttpBasedJsonPlaceholderApi(

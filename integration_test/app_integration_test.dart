@@ -21,6 +21,7 @@ const postsAppBarKey = Key('posts_app_bar');
 const postsTabBarKey = Key('posts_tab_bar');
 const postsTabAllKey = Key('posts_tab_all');
 const postsTabBookmarkedKey = Key('posts_tab_bookmarked');
+const postsOfflineIndicatorKey = Key('offline_posts_indicator');
 const postsListKey = Key('posts_list');
 const postItem1Key = Key('post_item:1');
 const postItem2Key = Key('post_item:2');
@@ -60,7 +61,7 @@ void main() {
   tearDown(() => getIt.reset());
 
   group('Posts Page', () {
-    testWidgets('Verify page is empty when data is not present', (
+    testWidgets('Verify all tab is empty when data is not present', (
       WidgetTester tester,
     ) async {
       getIt.registerSingleton<JsonPlaceholderApi>(
@@ -73,7 +74,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(PostsListPage), findsOneWidget);
-      expect(find.byType(Container), findsOneWidget);
+      expect(find.byType(Container), findsAtLeastNWidgets(2));
       expect(find.byType(PostItem), findsNothing);
     });
 
@@ -90,6 +91,7 @@ void main() {
         const Present(key: postsTabBarKey, isBelow: postsAppBarKey),
         const Present(key: postsTabAllKey, isLeftOf: postsTabBookmarkedKey),
         const Present(key: postsTabBookmarkedKey, isRightOf: postsTabAllKey),
+        const Present(key: postsOfflineIndicatorKey, isRightOf: postsTabAllKey),
         const Present(key: postsListKey, isBelow: postsAppBarKey),
         const Present(key: postItem1Key),
         const Present(key: postItem2Key, isBelow: postItem1Key),
@@ -110,6 +112,51 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(PostDetailsPage), findsOneWidget);
+    });
+
+    testWidgets('Offline posts counter is shown correctly', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostsListPage), findsOneWidget);
+
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Text &&
+              widget.data == '0' &&
+              widget.key == postsOfflineIndicatorKey,
+        ),
+        findsOneWidget,
+      );
+
+      expect(find.byKey(postItem1Key), findsOneWidget);
+      await tester.tap(find.byKey(postItem1Key));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostDetailsPage), findsOneWidget);
+      expect(find.byIcon(Icons.bookmark_add_outlined), findsOneWidget);
+
+      await tester.tap(find.byKey(detailsBookmarkButtonKey));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.bookmark), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PostsListPage), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Text &&
+              widget.data == '1' &&
+              widget.key == postsOfflineIndicatorKey,
+        ),
+        findsOneWidget,
+      );
     });
   });
 

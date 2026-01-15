@@ -3,6 +3,7 @@ import 'package:flutter_tech_task/domain/entities/result.dart';
 
 abstract class PostSummaryRepositoryContract {
   Stream<Result<List<PostSummary>>> watchPostSummaries();
+  Stream<Result<List<PostSummary>>> watchOfflneSummaries();
   Future<void> refreshPostSummaries();
   void dispose();
 }

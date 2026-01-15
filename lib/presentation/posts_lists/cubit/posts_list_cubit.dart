@@ -2,33 +2,32 @@ import 'dart:async';
 
 import 'package:flutter_tech_task/domain/entities/post_summary.dart';
 import 'package:flutter_tech_task/domain/entities/result.dart';
-import 'package:flutter_tech_task/domain/repositories/post_summary_repository_contract.dart';
+import 'package:flutter_tech_task/domain/usecases/watch_post_summaries_use_case.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/cubit/posts_list_state.dart';
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
 
 class PostsListCubit extends SafeEmissionCubit<PostsListState> {
-  final PostSummaryRepositoryContract _postSummaryRepositoryContract;
+  final WatchPostSummariesUseCase _watchPostSummariesUseCase;
 
   StreamSubscription<Result<List<PostSummary>>>? _postsSubscription;
 
-  PostsListCubit({
-    required PostSummaryRepositoryContract postSummaryRepositoryContract,
-  }) : _postSummaryRepositoryContract = postSummaryRepositoryContract,
-       super(PostsListLoading()) {
-    _postsSubscription ??= _postSummaryRepositoryContract
-        .watchPostSummaries()
-        .listen((postsResult) {
-          switch (postsResult) {
-            case Success<List<PostSummary>>():
-              maybeEmit(PostsListLoaded(posts: postsResult.value));
-            case Failure<List<PostSummary>>():
-            case Loading<List<PostSummary>>():
-              maybeEmit(PostsListLoading());
-          }
-        });
+  PostsListCubit({required WatchPostSummariesUseCase watchPostSummariesUseCase})
+    : _watchPostSummariesUseCase = watchPostSummariesUseCase,
+      super(PostsListLoading()) {
+    _postsSubscription ??= _watchPostSummariesUseCase.watch().listen((
+      postsResult,
+    ) {
+      switch (postsResult) {
+        case Success<List<PostSummary>>():
+          maybeEmit(PostsListLoaded(posts: postsResult.value));
+        case Failure<List<PostSummary>>():
+        case Loading<List<PostSummary>>():
+          maybeEmit(PostsListLoading());
+      }
+    });
   }
 
-  void loadPosts() => _postSummaryRepositoryContract.refreshPostSummaries();
+  void loadPosts() => _watchPostSummariesUseCase.refresh();
 
   @override
   Future<void> close() {

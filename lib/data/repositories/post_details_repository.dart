@@ -26,7 +26,20 @@ class PostDetailsRepository extends PostDetailsRepositoryContract {
 
     _jsonPlaceholderApi
         .getPostDetails(_postId)
-        .then((postDetails) => _subject.add(Result.success(postDetails)));
+        .then((postDetails) => _subject.add(Result.success(postDetails)))
+        .onError<Exception>((e, _) {
+          _subject.add(
+            Result<PostDetails>.failureFromException(
+              error: e,
+              value: lastValue,
+            ),
+          );
+        })
+        .onError<Error>((e, _) {
+          _subject.add(
+            Result<PostDetails>.failureFromError(error: e, value: lastValue),
+          );
+        });
   }
 
   @override

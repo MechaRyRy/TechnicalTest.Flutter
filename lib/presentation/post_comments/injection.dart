@@ -20,7 +20,10 @@ Future<void> createPostCommentsPageScopedInjection(
         () => WatchCommentsUseCase(postCommentsRepository: getIt()),
       );
       getIt.registerFactory(
-        () => PostCommentsCubit(watchCommentsUseCase: getIt()),
+        () => PostCommentsCubit(
+          appNavigator: getIt(),
+          watchCommentsUseCase: getIt(),
+        ),
       );
     },
   );

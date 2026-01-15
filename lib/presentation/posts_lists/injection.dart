@@ -40,7 +40,10 @@ Future<void> createAllTabScopedInjection(GetIt getIt) async {
       );
 
       getIt.registerFactory<PostsListCubit>(
-        () => PostsListCubit(watchPostSummariesUseCase: getIt()),
+        () => PostsListCubit(
+          appNavigator: getIt(),
+          watchPostSummariesUseCase: getIt(),
+        ),
       );
     },
   );
@@ -63,7 +66,10 @@ Future<void> createBookmarkedTabScopedInjection(GetIt getIt) async {
       );
 
       getIt.registerFactory<PostsListCubit>(
-        () => PostsListCubit(watchPostSummariesUseCase: getIt()),
+        () => PostsListCubit(
+          appNavigator: getIt(),
+          watchPostSummariesUseCase: getIt(),
+        ),
       );
     },
   );

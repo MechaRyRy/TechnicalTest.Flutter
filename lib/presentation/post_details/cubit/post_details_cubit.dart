@@ -37,13 +37,6 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
   Future<void> loadDetails() =>
       _postDetailsRepositoryContract.refreshPostDetails();
 
-  @override
-  Future<void> close() {
-    _postDetailsSubscription?.cancel();
-    _postDetailsSubscription = null;
-    return super.close();
-  }
-
   void performAction(BookmarkAction action) {
     switch (action) {
       case AddBookmark():
@@ -51,5 +44,12 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
       case RemoveBookmark():
         _postDetailsRepositoryContract.removeBookmark();
     }
+  }
+
+  @override
+  Future<void> close() {
+    _postDetailsSubscription?.cancel();
+    _postDetailsSubscription = null;
+    return super.close();
   }
 }

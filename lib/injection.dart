@@ -1,3 +1,4 @@
+import 'package:flutter_tech_task/app_navigator.dart';
 import 'package:flutter_tech_task/data/data_sources/json_placeholder_api.dart';
 import 'package:flutter_tech_task/data/data_sources/json_placeholder_store.dart';
 import 'package:flutter_tech_task/data/repositories/post_summary_repository.dart';
@@ -13,6 +14,7 @@ Future<void> createApplicationLevelInjection(GetIt getIt) async {
   getIt.pushNewScope(
     scopeName: _applicationScopeKey,
     init: (getIt) {
+      getIt.registerSingleton(AppNavigator());
       getIt.registerLazySingleton<PostSummaryRepositoryContract>(
         () => PostSummaryRepository(
           jsonPlaceholderApi: getIt(),

@@ -3,24 +3,32 @@ import 'dart:async';
 import 'package:flutter_tech_task/app_navigator.dart';
 import 'package:flutter_tech_task/domain/entities/post_details.dart';
 import 'package:flutter_tech_task/domain/entities/result.dart';
-import 'package:flutter_tech_task/domain/repositories/post_details_repository_contract.dart';
+import 'package:flutter_tech_task/domain/usecases/add_post_use_case.dart';
+import 'package:flutter_tech_task/domain/usecases/remove_post_use_case.dart';
+import 'package:flutter_tech_task/domain/usecases/watch_post_details_use_case.dart';
 import 'package:flutter_tech_task/presentation/post_details/cubit/post_details_state.dart';
 import 'package:flutter_tech_task/utils/safe_emission_cubit.dart';
 
 class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
   final AppNavigator _appNavigator;
-  final PostDetailsRepositoryContract _postDetailsRepositoryContract;
+  final AddPostUseCase _addPostUseCase;
+  final RemovePostUseCase _removePostUseCase;
+  final WatchPostDetailsUseCase _watchPostDetailsUseCase;
 
   StreamSubscription<Result<PostDetails>>? _postDetailsSubscription;
 
   PostDetailsCubit({
     required AppNavigator appNavigator,
-    required PostDetailsRepositoryContract postDetailsRepositoryContract,
+    required AddPostUseCase addPostUseCase,
+    required RemovePostUseCase removePostUseCase,
+    required WatchPostDetailsUseCase watchPostDetailsUseCase,
   }) : _appNavigator = appNavigator,
-       _postDetailsRepositoryContract = postDetailsRepositoryContract,
+       _addPostUseCase = addPostUseCase,
+       _removePostUseCase = removePostUseCase,
+       _watchPostDetailsUseCase = watchPostDetailsUseCase,
        super(PostDetailsLoading()) {
-    _postDetailsSubscription ??= _postDetailsRepositoryContract
-        .watchPostDetails() //
+    _postDetailsSubscription ??= _watchPostDetailsUseCase
+        .watch() //
         .listen((postDetails) {
           switch (postDetails) {
             case Success<PostDetails>():
@@ -39,15 +47,14 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
         });
   }
 
-  Future<void> loadDetails() =>
-      _postDetailsRepositoryContract.refreshPostDetails();
+  Future<void> loadDetails() => _watchPostDetailsUseCase.refresh();
 
   void performAction(BookmarkAction action) {
     switch (action) {
       case AddBookmark():
-        _postDetailsRepositoryContract.addBookmark();
+        _addPostUseCase.addPost();
       case RemoveBookmark():
-        _postDetailsRepositoryContract.removeBookmark();
+        _removePostUseCase.removePost();
     }
   }
 

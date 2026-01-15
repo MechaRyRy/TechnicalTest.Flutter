@@ -41,8 +41,20 @@ class PostDetailsCubit extends SafeEmissionCubit<PostDetailsState> {
                 ),
               );
             case Failure<PostDetails>():
-            case Loading<PostDetails>():
-              maybeEmit(PostDetailsLoading());
+              _appNavigator.pushScaffoldMessenger(ScaffoldMessengerRoute.error);
+            case Loading<PostDetails>(value: final value):
+              if (value != null) {
+                maybeEmit(
+                  PostDetailsLoaded(
+                    postDetails: value,
+                    action: value.isOffline
+                        ? RemoveBookmark(postId: value.id)
+                        : AddBookmark(postId: value.id),
+                  ),
+                );
+              } else {
+                maybeEmit(PostDetailsLoading());
+              }
           }
         });
   }

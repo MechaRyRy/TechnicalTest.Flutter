@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tech_task/injection.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/cubit/posts_list_cubit.dart';
@@ -42,9 +42,12 @@ class _BookmarkedTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PostsListCubit, PostsListState>(
       builder: (context, state) => switch (state) {
-        PostsListLoading() => Container(),
+        PostsListLoading() => const Center(
+          key: Key('bookmarked_posts_loading_indicator'),
+          child: CircularProgressIndicator(),
+        ),
         PostsListLoaded() => ListView(
-          key: const Key('posts_list'),
+          key: const Key('bookmarked_posts_list'),
           children: state.posts
               .map(
                 (post) => PostItem(

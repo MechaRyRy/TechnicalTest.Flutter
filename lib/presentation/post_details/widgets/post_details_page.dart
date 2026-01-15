@@ -63,7 +63,10 @@ class _PostDetailsPageContent extends StatelessWidget {
           },
         ),
         body: switch (state) {
-          PostDetailsLoading() => Container(),
+          PostDetailsLoading() => const Center(
+            key: Key('details_loading_indicator'),
+            child: CircularProgressIndicator(),
+          ),
           PostDetailsLoaded(postDetails: final postDetails) => PostDetailsItem(
             id: postDetails.id,
             title: postDetails.title,

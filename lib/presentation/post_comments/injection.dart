@@ -1,5 +1,6 @@
 import 'package:flutter_tech_task/data/repositories/post_comments_repository.dart';
 import 'package:flutter_tech_task/domain/repositories/post_comments_repository_contract.dart';
+import 'package:flutter_tech_task/domain/usecases/watch_comments_use_case.dart';
 import 'package:flutter_tech_task/presentation/post_comments/cubit/post_comments_cubit.dart';
 import 'package:get_it/get_it.dart';
 
@@ -16,7 +17,10 @@ Future<void> createPostCommentsPageScopedInjection(
         PostCommentsRepository(postId: postId, jsonPlaceholderApi: getIt()),
       );
       getIt.registerFactory(
-        () => PostCommentsCubit(postCommentsRepository: getIt()),
+        () => WatchCommentsUseCase(postCommentsRepository: getIt()),
+      );
+      getIt.registerFactory(
+        () => PostCommentsCubit(watchCommentsUseCase: getIt()),
       );
     },
   );

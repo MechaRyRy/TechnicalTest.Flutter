@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tech_task/presentation/posts_lists/widgets/all_tab.dart';
+import 'package:flutter_tech_task/presentation/posts_lists/widgets/bookmarked_tab.dart';
 
 class PostsListPage extends StatelessWidget {
   const PostsListPage({super.key});
@@ -20,7 +21,7 @@ class PostsListPage extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(children: [AllPostsTab(), Container()]),
+        body: TabBarView(children: [AllPostsTab(), BookmarkedPostsTab()]),
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter_tech_task/presentation/post_details/widgets/post_details
 import 'package:flutter_tech_task/presentation/posts_lists/widgets/posts_list_page.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await createApplicationLevelInjection(getIt);
   runApp(const MyApp());
 }

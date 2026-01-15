@@ -15,6 +15,7 @@ import 'package:integration_test/integration_test.dart';
 
 import '../test/utils/assets_reader.dart';
 import '../test/utils/ui_verification.dart';
+import 'injection.dart';
 
 Client httpClient = Client();
 
@@ -23,22 +24,28 @@ const postsTabBarKey = Key('posts_tab_bar');
 const postsTabAllKey = Key('posts_tab_all');
 const postsTabBookmarkedKey = Key('posts_tab_bookmarked');
 const postsOfflineIndicatorKey = Key('offline_posts_indicator');
-const postsListKey = Key('posts_list');
+const postsListKey = Key('all_posts_list');
+const bookmarkedListKey = Key('bookmarked_posts_list');
+const postsLoadingIndicatorKey = Key('all_posts_loading_indicator');
 const postItem1Key = Key('post_item:1');
 const postItem2Key = Key('post_item:2');
 const postItem3Key = Key('post_item:3');
 
 const detailsAppBarKey = Key('details_app_bar');
 const detailsAppBarTitleKey = Key('details_app_bar_title');
+const detailsLoadingIndicatorKey = Key('details_loading_indicator');
 const detailsBookmarkButtonKey = Key('details_bookmark_button');
 const postDetailsTitle1Key = Key('post_details_title:1');
 const postDetailsBody1Key = Key('post_details_body:1');
+
+const commentsListKey = Key('comments_list_view');
+const commentsLoadingIndicatorKey = Key('comments_loading_indicator');
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() {
-    createApplicationLevelInjection(getIt);
+    createTestApplicationInjection(getIt);
     getIt.allowReassignment = true;
     getIt.registerSingleton<JsonPlaceholderApi>(
       HttpBasedJsonPlaceholderApi(
@@ -72,10 +79,11 @@ void main() {
       );
       await tester.pumpWidget(const MyApp());
 
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(seconds: 1));
 
       expect(find.byType(PostsListPage), findsOneWidget);
-      expect(find.byType(Container), findsAtLeastNWidgets(2));
+      expect(find.byKey(postsTabAllKey), findsOne);
+      expect(find.byKey(postsLoadingIndicatorKey), findsOne);
       expect(find.byType(PostItem), findsNothing);
     });
 
@@ -183,12 +191,11 @@ void main() {
 
       expect(find.byKey(postItem1Key), findsOneWidget);
       await tester.tap(find.byKey(postItem1Key));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(seconds: 1));
 
-      // Since the mock client does not return data for post id 1, the details page should be empty
       expect(find.byType(PostDetailsPage), findsOneWidget);
       expect(find.byType(PostDetailsItem), findsNothing);
-      expect(find.byType(Container), findsOneWidget);
+      expect(find.byKey(detailsLoadingIndicatorKey), findsOne);
     });
 
     testWidgets('Verify details page widget ordering', (
@@ -257,9 +264,11 @@ void main() {
       expect(find.byIcon(Icons.comment), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.comment));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(seconds: 1));
 
       expect(find.byType(PostCommentsPage), findsOneWidget);
+      expect(find.byKey(commentsListKey), findsNothing);
+      expect(find.byKey(commentsLoadingIndicatorKey), findsOne);
     });
   });
 }
